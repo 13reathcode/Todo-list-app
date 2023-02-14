@@ -120,3 +120,23 @@ textarea:focus {
 .update-controller {
     display: none;
 }
+
+@media (max-width: 768px) {
+    .app {
+        width: 95%;
+        text-align: center;
+    }
+
+    .input-header {
+        flex-direction: column;
+        padding-bottom: 20px;
+    }
+
+    .to-do-input {
+        display: flex;
+    }
+
+    .to-do-input input {
+        width: 300px;
+    }
+}

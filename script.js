@@ -1,21 +1,31 @@
+'use strict';
+
 // Elements
+const date = document.querySelector('#date');
+const enterBtn = document.querySelector('#enter');
+const enterItem = document.querySelector('#item');
 
 // If using local storage parse everything and store otherwise empty array
 const itemsArray = localStorage.getItem('items') ? JSON.parse(localStorage.getItem('items')) : [];
 
 // Adding items to local storage
-document.querySelector('#enter').addEventListener('click', () => {
-    const item = document.querySelector('#item');
-    createItem(item);
+enterBtn.addEventListener('click', () => {
+    pushItem(enterItem);
 });
 
+enterItem.addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') pushItem(enterItem);
+});
+// Functions
+
 function displayItems() {
+    // Creating item
     let items = '';
     itemsArray.forEach((_, index) => {
         items += `
         <div class="item">
             <div class="input-controller">
-                <textarea disabled>${itemsArray[index]}</textarea>
+                <textarea disabled>${index + 1}. ${itemsArray[index]}</textarea>
                 <div class="edit-controller">
                     <i class="fa-solid fa-pencil editBtn"></i>
                     <i class="fa-solid fa-xmark deleteBtn"></i>
@@ -29,59 +39,68 @@ function displayItems() {
         `;
     });
     document.querySelector('.to-do-list').innerHTML = items;
-    activateDeleteListeners();
-    activateEditListeners();
-    activateSaveListeners();
-    activateCancelListeners();
+
+    // Newly Created Elements
+    const deleteButtons = document.querySelectorAll('.deleteBtn');
+    const editButtons = document.querySelectorAll('.editBtn');
+    const saveButtons = document.querySelectorAll('.saveBtn');
+    const cancelButtons = document.querySelectorAll('.cancelBtn');
+
+    const inputs = document.querySelectorAll('.input-controller textarea');
+    const updateControllers = document.querySelectorAll('.update-controller');
+
+    // Buttons events
+    activateDeleteListeners(deleteButtons);
+    activateEditListeners(editButtons, updateControllers, inputs);
+    activateSaveListeners(saveButtons, inputs);
+    activateCancelListeners(cancelButtons, updateControllers, inputs);
 }
 
-function activateDeleteListeners() {
-    const deleteBtn = document.querySelectorAll('.deleteBtn');
-    deleteBtn.forEach((btn, i) => {
+const activateDeleteListeners = (buttons) => {
+    buttons.forEach((btn, i) => {
         btn.addEventListener('click', () => {
             deleteItem(i);
         });
     });
-}
+};
 
-function activateEditListeners() {
-    const editBtn = document.querySelectorAll('.editBtn');
-    const updateController = document.querySelectorAll('.update-controller');
-    const inputs = document.querySelectorAll('.input-controller textarea');
-    editBtn.forEach((btn, i) => {
+const activateEditListeners = (buttons, controllers, inputs) => {
+    buttons.forEach((btn, i) => {
         btn.addEventListener('click', () => {
-            updateController[i].style.display = 'block';
+            controllers[i].style.display = 'block';
             inputs[i].disabled = false;
         });
     });
-}
+};
 
-function activateSaveListeners() {
-    const saveBtn = document.querySelectorAll('.saveBtn');
-    const inputs = document.querySelectorAll('.input-controller textarea');
-    saveBtn.forEach((btn, i) => {
+const activateSaveListeners = (buttons, inputs) => {
+    buttons.forEach((btn, i) => {
         btn.addEventListener('click', () => {
             saveItem(inputs[i].value, i);
         });
     });
-}
+};
 
-function activateCancelListeners() {
-    const cancelBtn = document.querySelectorAll('.cancelBtn');
-    const updateController = document.querySelectorAll('.update-controller');
-    const inputs = document.querySelectorAll('.input-controller textarea');
-    cancelBtn.forEach((btn, i) => {
+const activateCancelListeners = (buttons, controllers, inputs) => {
+    buttons.forEach((btn, i) => {
         btn.addEventListener('click', () => {
-            updateController[i].style.display = 'none';
+            controllers[i].style.display = 'none';
             inputs[i].disabled = true;
             location.reload();
         });
     });
-}
+};
+
+// Help Functions
 
 function reloadLocalStorage(items) {
     localStorage.setItem(items, JSON.stringify(itemsArray));
     location.reload();
+}
+
+function pushItem(item) {
+    itemsArray.push(item.value);
+    reloadLocalStorage('items');
 }
 
 function saveItem(text, i) {
@@ -94,17 +113,12 @@ function deleteItem(i) {
     reloadLocalStorage('items');
 }
 
-function createItem(item) {
-    itemsArray.push(item.value);
-    reloadLocalStorage('items');
-}
-
 // Date logic
 
 function displayDate() {
-    let date = new Date();
-    date = date.toString().split(' ');
-    document.querySelector('#date').innerHTML = `${date[1]} ${date[2]} ${date[3]}`;
+    let now = new Date();
+    now = now.toString().split(' ');
+    document.querySelector('#date').innerHTML = `${now[1]} ${now[2]} ${now[3]}`;
 }
 
 window.onload = () => {

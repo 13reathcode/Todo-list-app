@@ -16,8 +16,8 @@ body {
 button {
     height: fit-content;
     cursor: pointer;
-    color: #04202c;
-    background-color: #c9d1c8;
+    color: #333;
+    background-color: white;
 }
 
 .app {
@@ -48,7 +48,7 @@ button {
 }
 
 .to-do-input button {
-    color: #5b7065;
+    color: #333;
     font-family: inherit;
     border: none;
     padding: 10px;
@@ -103,6 +103,7 @@ button {
     color: white;
     border-radius: 10px;
     background-color: transparent;
+    text-transform: capitalize;
     font-size: 1.2rem;
     font-family: inherit;
     transition: all 0.3s ease-in-out;
@@ -117,10 +118,21 @@ textarea:focus {
     gap: 5px;
 }
 
-/* change later */
-
 .update-controller {
     display: none;
+}
+
+.saveBtn:hover {
+    color: lightgreen;
+}
+
+.cancelBtn:hover {
+    color: orangered;
+}
+
+.editBtn:hover {
+    display: flex;
+    color: red;
 }
 
 @media (max-width: 768px) {
